@@ -1,5 +1,7 @@
 {
   "name": "bookshelf-api",
+  "private": true,
+  "type": "module",
   "scripts": {
     "dev": "bun run --hot src/index.ts"
   },

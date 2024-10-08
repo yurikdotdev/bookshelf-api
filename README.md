@@ -1,11 +1,25 @@
-To install dependencies:
+# Bookshelf API Documentation
+
+install dependencies:
+
 ```sh
 bun install
 ```
 
-To run:
+run:
+
 ```sh
-bun run dev
+bun dev
 ```
 
-open http://localhost:3000
+<http://localhost:3000>
+
+## Endpoints
+
+### API Specification
+
+| Endpoint | Method | Parameters | Response |
+| --- | --- | --- | --- |
+| `/books` | GET | `page` | List of books |
+| `/books/:id` | GET | `id` | A book |
+
