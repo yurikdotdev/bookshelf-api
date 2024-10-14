@@ -18,8 +18,13 @@ bun dev
 
 ### API Specification
 
-| Endpoint | Method | Parameters | Response |
-| --- | --- | --- | --- |
-| `/books` | GET | `page` | List of books |
-| `/books/:id` | GET | `id` | A book |
+| Endpoint     | HTTP     | Description       |
+| ------------ | -------- | ----------------- |
+| `/books`     | `GET`    | Get all books     |
+| `/books/:id` | `GET`    | Get book by id    |
+| `/books`     | `POST`   | Add new book      |
+| `/books`     | `DELETE` | Delete all books  |
+| `/books/:id` | `DELETE` | Delete book by id |
+| `/books/:id` | `PATCH`  | Update book by id |
+
 

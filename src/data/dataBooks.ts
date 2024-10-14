@@ -1,6 +1,6 @@
-export const dummyBooks = [
+export const dataBooks = [
   {
-    id: 1,
+    id: '1',
     title: 'The Alchemist',
     author: 'Paulo Coelho',
     description: 'A fable about following your dreams',
@@ -8,7 +8,7 @@ export const dummyBooks = [
     published_date: '1988-04-01',
   },
   {
-    id: 2,
+    id: '2',
     title: 'The Hitchhiker\'s Guide to the Galaxy',
     author: 'Douglas Adams',
     description: 'A comedic science fiction series',
@@ -16,7 +16,7 @@ export const dummyBooks = [
     published_date: '1979-10-12',
   },
   {
-    id: 3,
+    id: '3',
     title: 'To Kill a Mockingbird',
     author: 'Harper Lee',
     description: 'A classic novel about racial injustice',
@@ -24,7 +24,7 @@ export const dummyBooks = [
     published_date: '1960-07-11',
   },
   {
-    id: 4,
+    id: '4',
     title: 'The Catcher in the Rye',
     author: 'J.D. Salinger',
     description: 'A classic coming-of-age novel',
@@ -32,7 +32,7 @@ export const dummyBooks = [
     published_date: '1951-07-16',
   },
   {
-    id: 5,
+    id: '5',
     title: '1984',
     author: 'George Orwell',
     description: 'A dystopian novel about government surveillance',
@@ -40,7 +40,7 @@ export const dummyBooks = [
     published_date: '1949-06-08',
   },
   {
-    id: 6,
+    id: '6',
     title: 'The Great Gatsby',
     author: 'F. Scott Fitzgerald',
     description: 'A classic novel about the American Dream',
@@ -48,7 +48,7 @@ export const dummyBooks = [
     published_date: '1925-04-10',
   },
   {
-    id: 7,
+    id: '7',
     title: 'Pride and Prejudice',
     author: 'Jane Austen',
     description: 'A romantic novel about love and family',
@@ -56,7 +56,7 @@ export const dummyBooks = [
     published_date: '1813-01-28',
   },
   {
-    id: 8,
+    id: '8',
     title: 'The Picture of Dorian Gray',
     author: 'Oscar Wilde',
     description: 'A philosophical novel about beauty and morality',
@@ -64,7 +64,7 @@ export const dummyBooks = [
     published_date: '1890-07-01',
   },
   {
-    id: 9,
+    id: '9',
     title: 'War and Peace',
     author: 'Leo Tolstoy',
     description: 'A historical novel about war and family',
@@ -72,7 +72,7 @@ export const dummyBooks = [
     published_date: '1865-01-01',
   },
   {
-    id: 10,
+    id: '10',
     title: 'Moby-Dick',
     author: 'Herman Melville',
     description: 'An epic novel about obsession and the sea',

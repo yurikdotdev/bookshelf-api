@@ -3,12 +3,15 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "dev": "bun run --hot src/index.ts"
+    "dev": "bun run --hot src/index.ts",
+    "start": "bun run src/index.ts",
+    "test:integration": "hurl --verbose --glob tests/*.hurl"
   },
   "dependencies": {
     "hono": "^4.6.3"
   },
   "devDependencies": {
+    "@orangeopensource/hurl": "^5.0.1",
     "@types/bun": "latest"
   }
 }
