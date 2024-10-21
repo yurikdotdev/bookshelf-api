@@ -1,3 +1,7 @@
+# Get all books
+GET http://localhost:3000/books
+HTTP 200
+
 # Get all books on page 3
 GET http://localhost:3000/books?page=3
 HTTP 200
