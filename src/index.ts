@@ -1,7 +1,24 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 
-import { dataBooks } from './data/dataBooks';
+const dataBooks = [
+  {
+    id: '1',
+    title: 'Book 1',
+    author: 'Author 1',
+    description: 'Description 1',
+    publisher: 'Publisher 1',
+    published_date: '2021-01-01',
+  },
+  {
+    id: '2',
+    title: 'Book 2',
+    author: 'Author 2',
+    description: 'Description 2',
+    publisher: 'Publisher 2',
+    published_date: '2021-01-01',
+  },
+];
 
 const app = new Hono();
 
@@ -12,7 +29,6 @@ app.get('/', (c) => {
 
   return c.json(
     {
-      ok: true,
       message: 'Bookshelf API',
     },
     200
@@ -21,7 +37,7 @@ app.get('/', (c) => {
 
 app.get('/books', (c) => {
   const page = Number(c.req.query('page')) || 1;
-  const itemsPerPage = 3;
+  const itemsPerPage = Number(c.req.query('items')) || 10;
 
   const startIndex = (page - 1) * itemsPerPage;
   const endIndex = startIndex + itemsPerPage;
@@ -29,7 +45,6 @@ app.get('/books', (c) => {
 
   return c.json(
     {
-      ok: true,
       total: dataBooks.length,
       page,
       books: paginatedBooks,
@@ -72,7 +87,6 @@ app.post('/books', async (c) => {
 
   return c.json(
     {
-      ok: true,
       message: 'Book added successfully',
       book: newBook,
     },
@@ -103,7 +117,6 @@ app.patch('/books/:id', async (c) => {
 
   return c.json(
     {
-      ok: true,
       message: 'Book updated successfully',
       book: dataBooks[bookIndex],
     },
@@ -116,13 +129,12 @@ app.delete('/books', (c) => {
 
   return c.json(
     {
-      ok: true,
       message: 'All books deleted successfully',
     },
     204
   );
-})
-  
+});
+
 app.delete('/books/:id', (c) => {
   const id = c.req.param('id');
 
@@ -136,7 +148,6 @@ app.delete('/books/:id', (c) => {
 
   return c.json(
     {
-      ok: true,
       message: 'Book deleted successfully',
     },
     204
