@@ -1,6 +1,8 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 
+import prisma from './db';
+
 const dataBooks = [
   {
     id: '1',
@@ -35,22 +37,16 @@ app.get('/', (c) => {
   );
 });
 
-app.get('/books', (c) => {
-  const page = Number(c.req.query('page')) || 1;
-  const itemsPerPage = Number(c.req.query('items')) || 10;
-
-  const startIndex = (page - 1) * itemsPerPage;
-  const endIndex = startIndex + itemsPerPage;
-  const paginatedBooks = dataBooks.slice(startIndex, endIndex);
+app.get('/books', async (c) => {
+  const books = await prisma.book.findMany();
 
   return c.json(
     {
-      total: dataBooks.length,
-      page,
-      books: paginatedBooks,
+      books,
     },
     200
-  );
+  )
+
 });
 
 app.get('/books/:id', (c) => {
