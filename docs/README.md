@@ -78,8 +78,6 @@ bun dev
 | `/books/:id/reviews/:rid` | `PATCH`  | Update a review by ID       |
 | `/books/:id/reviews/:rid` | `DELETE` | Delete a review by ID       |
 
-|
-
 ## ERD
 
 ```mermaid
