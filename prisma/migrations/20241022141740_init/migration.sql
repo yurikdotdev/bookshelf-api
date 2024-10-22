@@ -1,28 +1,31 @@
+-- CreateEnum
+CREATE TYPE "ReadingStatus" AS ENUM ('CURRENTLY_READING', 'READ');
+
 -- CreateTable
 CREATE TABLE "Author" (
-    "uuid" TEXT NOT NULL,
-    "name" TEXT NOT NULL,
+    "uuid" UUID NOT NULL,
+    "name" VARCHAR(100) NOT NULL,
 
     CONSTRAINT "Author_pkey" PRIMARY KEY ("uuid")
 );
 
 -- CreateTable
 CREATE TABLE "Book" (
-    "uuid" TEXT NOT NULL,
-    "title" TEXT NOT NULL,
+    "uuid" UUID NOT NULL,
+    "title" VARCHAR(255) NOT NULL,
     "description" TEXT,
-    "publisher" TEXT,
+    "publisher" VARCHAR(255),
     "published_date" TIMESTAMP(3),
-    "language" TEXT,
+    "language" VARCHAR(100),
     "cover_image" TEXT,
-    "author_id" TEXT NOT NULL,
+    "author_id" UUID NOT NULL,
 
     CONSTRAINT "Book_pkey" PRIMARY KEY ("uuid")
 );
 
 -- CreateTable
 CREATE TABLE "Tag" (
-    "uuid" TEXT NOT NULL,
+    "uuid" UUID NOT NULL,
     "keywords" TEXT[],
 
     CONSTRAINT "Tag_pkey" PRIMARY KEY ("uuid")
@@ -30,28 +33,28 @@ CREATE TABLE "Tag" (
 
 -- CreateTable
 CREATE TABLE "BookTag" (
-    "uuid" TEXT NOT NULL,
-    "book_id" TEXT NOT NULL,
-    "tag_id" TEXT NOT NULL,
+    "uuid" UUID NOT NULL,
+    "book_id" UUID NOT NULL,
+    "tag_id" UUID NOT NULL,
 
     CONSTRAINT "BookTag_pkey" PRIMARY KEY ("uuid")
 );
 
 -- CreateTable
 CREATE TABLE "Status" (
-    "uuid" TEXT NOT NULL,
-    "book_id" TEXT NOT NULL,
-    "status" TEXT NOT NULL,
+    "uuid" UUID NOT NULL,
+    "book_id" UUID NOT NULL,
+    "status" "ReadingStatus" NOT NULL,
     "date_added" TIMESTAMP(3) NOT NULL,
-    "reviewed" BOOLEAN NOT NULL,
+    "is_reviewed" BOOLEAN NOT NULL DEFAULT false,
 
     CONSTRAINT "Status_pkey" PRIMARY KEY ("uuid")
 );
 
 -- CreateTable
 CREATE TABLE "Review" (
-    "uuid" TEXT NOT NULL,
-    "book_id" TEXT NOT NULL,
+    "uuid" UUID NOT NULL,
+    "book_id" UUID NOT NULL,
     "review" TEXT NOT NULL,
     "date_reviewed" TIMESTAMP(3) NOT NULL,
 

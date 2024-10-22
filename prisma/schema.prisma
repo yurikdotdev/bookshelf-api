@@ -8,20 +8,20 @@ datasource db {
 }
 
 model Author {
-  id    String @id @default(uuid()) @map("uuid")
-  name  String
+  id    String @id @default(uuid()) @db.Uuid @map("uuid")
+  name  String @db.VarChar(100)
   books Book[] @relation("WrittenBy")
 }
 
 model Book {
-  id             String    @id @default(uuid()) @map("uuid")
-  title          String
-  description    String?
-  publisher      String?
+  id             String    @id @default(uuid()) @db.Uuid @map("uuid")
+  title          String    @db.VarChar(255)
+  description    String?   @db.Text
+  publisher      String?   @db.VarChar(255)
   published_date DateTime?
-  language       String?
-  cover_image    String?
-  author_id      String
+  language       String?   @db.VarChar(100)
+  cover_image    String?   @db.Text
+  author_id      String    @db.Uuid
   author         Author    @relation("WrittenBy", fields: [author_id], references: [id])
   tags           BookTag[] @relation("TaggedWith")
   reviews        Review[]
@@ -29,32 +29,37 @@ model Book {
 }
 
 model Tag {
-  id       String    @id @default(uuid()) @map("uuid")
+  id       String    @id @default(uuid()) @db.Uuid @map("uuid")
   keywords String[]
   books    BookTag[] @relation("Includes")
 }
 
 model BookTag {
-  id      String @id @default(uuid()) @map("uuid")
-  book_id String
-  tag_id  String
+  id      String @id @default(uuid()) @db.Uuid @map("uuid")
+  book_id String @db.Uuid
+  tag_id  String @db.Uuid
   book    Book   @relation("TaggedWith", fields: [book_id], references: [id])
   tag     Tag    @relation("Includes", fields: [tag_id], references: [id])
 }
 
+enum ReadingStatus {
+  CURRENTLY_READING
+  READ
+}
+
 model Status {
-  id         String   @id @default(uuid()) @map("uuid")
-  book_id    String
-  status     String
-  date_added DateTime
-  reviewed   Boolean
-  book       Book     @relation(fields: [book_id], references: [id])
+  id          String   @id @default(uuid()) @db.Uuid @map("uuid")
+  book_id     String   @db.Uuid
+  status      ReadingStatus
+  date_added  DateTime
+  is_reviewed Boolean  @default(false)
+  book        Book     @relation(fields: [book_id], references: [id])
 }
 
 model Review {
-  id            String   @id @default(uuid()) @map("uuid")
-  book_id       String
-  review        String
+  id            String   @id @default(uuid()) @db.Uuid @map("uuid")
+  book_id       String   @db.Uuid
+  review        String   @db.Text
   date_reviewed DateTime
   book          Book     @relation(fields: [book_id], references: [id])
 }
