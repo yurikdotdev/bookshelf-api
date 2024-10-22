@@ -1,0 +1,60 @@
+generator client {
+  provider      = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Author {
+  id    String @id @default(uuid()) @map("uuid")
+  name  String
+  books Book[] @relation("WrittenBy")
+}
+
+model Book {
+  id             String    @id @default(uuid()) @map("uuid")
+  title          String
+  description    String?
+  publisher      String?
+  published_date DateTime?
+  language       String?
+  cover_image    String?
+  author_id      String
+  author         Author    @relation("WrittenBy", fields: [author_id], references: [id])
+  tags           BookTag[] @relation("TaggedWith")
+  reviews        Review[]
+  statuses       Status[]
+}
+
+model Tag {
+  id       String    @id @default(uuid()) @map("uuid")
+  keywords String[]
+  books    BookTag[] @relation("Includes")
+}
+
+model BookTag {
+  id      String @id @default(uuid()) @map("uuid")
+  book_id String
+  tag_id  String
+  book    Book   @relation("TaggedWith", fields: [book_id], references: [id])
+  tag     Tag    @relation("Includes", fields: [tag_id], references: [id])
+}
+
+model Status {
+  id         String   @id @default(uuid()) @map("uuid")
+  book_id    String
+  status     String
+  date_added DateTime
+  reviewed   Boolean
+  book       Book     @relation(fields: [book_id], references: [id])
+}
+
+model Review {
+  id            String   @id @default(uuid()) @map("uuid")
+  book_id       String
+  review        String
+  date_reviewed DateTime
+  book          Book     @relation(fields: [book_id], references: [id])
+}
