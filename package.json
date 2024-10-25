@@ -5,12 +5,13 @@
   "scripts": {
     "dev": "bun run --hot src/index.ts",
     "start": "bun run src/index.ts",
-    "start:migrate": "bun prisma migrate deploy && bun run src/index.ts",
+    "start:migrate": "bunx prisma migrate deploy && bun run src/index.ts",
     "test:integration": "hurl --verbose --glob tests/*.hurl"
   },
   "dependencies": {
     "@prisma/client": "5.21.1",
-    "hono": "^4.6.3"
+    "hono": "^4.6.3",
+    "zod": "^3.23.8"
   },
   "devDependencies": {
     "@orangeopensource/hurl": "^5.0.1",
