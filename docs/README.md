@@ -100,7 +100,7 @@ erDiagram
 
     Tag {
         uuid id PK "Primary Key: Unique identifier for the tag"
-        string[] keywords "Array of keywords associated with the tag"
+        string keyword "Keyword associated with the tag"
     }
 
     BookTag {
