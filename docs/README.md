@@ -18,7 +18,7 @@ bun dev
 
 ```sh
 
-hurl --test --verbose --variable host=[ENTER HOST] test/.
+hurl --test --verbose --variable host=[HOST_NAME] test/. > test/logs/(date "+%Y-%m-%d_%H-%M-%S").txt 2>&1
 
 ```
 
