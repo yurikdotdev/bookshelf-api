@@ -1,20 +1,28 @@
+import prisma from '@/db';
+import { Author, authorCreateSchema } from '@/types/Authors';
+import { Book } from '@/types/Books';
+import { handleErrorResponse } from '@/utils/utils';
 import { Hono } from 'hono';
-import prisma from '../db';
-
-import { Author, authorCreateSchema } from '../types/Authors';
-import { Book } from '../types/Books';
 
 const authorsRouter = new Hono();
 
 authorsRouter.get('/', async (c) => {
-  const authors: Author[] = await prisma.author.findMany();
+  try {
+    const authors: Author[] = await prisma.author.findMany({
+      include: {
+        books: true,
+      },
+    });
 
-  return c.json(
-    {
-      authors,
-    },
-    200
-  );
+    return c.json(
+      {
+        authors,
+      },
+      200
+    );
+  } catch (error) {
+    return handleErrorResponse(c, 'Error fetching authors', 500);
+  }
 });
 
 authorsRouter.get('/:id', async (c) => {
@@ -31,7 +39,7 @@ authorsRouter.get('/:id', async (c) => {
     });
 
     if (!author) {
-      return c.json({ message: 'Author not found' }, 404);
+      return handleErrorResponse(c, 'Error fetching author: Author not found', 404);
     }
 
     return c.json(
@@ -41,8 +49,7 @@ authorsRouter.get('/:id', async (c) => {
       200
     );
   } catch (error) {
-    console.error('Error fetching author:', error);
-    return c.json({ message: 'Internal Server Error: Invalid input' }, 500);
+    return handleErrorResponse(c, 'Error fetching author: Invalid id', 500);
   }
 });
 
@@ -52,18 +59,25 @@ authorsRouter.post('/', async (c) => {
     const parsed = authorCreateSchema.safeParse(result);
 
     if (!parsed.success) {
-      return c.json('Validation Error: Invalid input', 400);
+      return handleErrorResponse(
+        c,
+        'Validation error (authors): Invalid name input',
+        400
+      );
     }
 
     const { name, books }: { name: string; books?: { id: string }[] } =
       parsed.data;
 
     if (name.trim() === '') {
-      return c.json({ message: 'Validation Error: Name is required' }, 400);
+      return handleErrorResponse(
+        c,
+        'Validation error (authors): Name is required',
+        400
+      );
     }
 
     let validBooks: Book[] = [];
-
     if (books && books.length > 0) {
       validBooks = (await prisma.book.findMany({
         where: {
@@ -71,27 +85,33 @@ authorsRouter.post('/', async (c) => {
             in: books.map((book) => book.id),
           },
         },
-      })) as Book[];
-
+      }))
+      
       if (validBooks.length !== books.length) {
-        return c.json({ message: 'Some books not found' }, 404);
+        return handleErrorResponse(
+          c,
+          'Validation error (authors): Some books are not found',
+          404
+        );
       }
     }
 
-    const author: Author = await prisma.author.create({
-      data: {
-        name,
-        ...(validBooks.length > 0 && {
-          books: {
-            connect: validBooks.map((book) => ({
-              id: book.id,
-            })),
-          },
-        }),
-      },
-      include: {
-        books: true,
-      },
+    const author = await prisma.$transaction(async (tx) => {
+      return await tx.author.create({
+        data: {
+          name,
+          ...(validBooks.length > 0 && {
+            books: {
+              connect: validBooks.map((book) => ({
+                id: book.id,
+              })),
+            },
+          }),
+        },
+        include: {
+          books: true,
+        },
+      });
     });
 
     return c.json(
@@ -106,8 +126,8 @@ authorsRouter.post('/', async (c) => {
       201
     );
   } catch (error) {
-    console.error('Error creating author:', error);
-    return c.json({ message: 'An unexpected error occurred' }, 500);
+    console.error('error creating author:', error);
+    return c.json({ message: 'an unexpected error occurred' }, 500);
   }
 });
 
@@ -115,7 +135,18 @@ authorsRouter.patch('/:id', async (c) => {
   const id = c.req.param('id');
 
   try {
-    const { name } = await c.req.json();
+    const result = await c.req.json();
+    const parsed = authorCreateSchema.safeParse(result);
+
+    if (!parsed.success) {
+      return handleErrorResponse(
+        c,
+        'Validation error (authors): Invalid name input',
+        400
+      );
+    }
+
+    const { name } = parsed.data;
 
     const author = await prisma.author.update({
       where: {
@@ -138,11 +169,10 @@ authorsRouter.patch('/:id', async (c) => {
     );
   } catch (error: any) {
     if (error.code === 'P2025') {
-      return c.json({ message: 'Author not found' }, 404);
+      return handleErrorResponse(c, 'Error updating author: Author not found', 404);
     }
 
-    console.error('Error fetching author:', error);
-    return c.json({ message: 'Internal Server Error: Invalid input' }, 500);
+    return handleErrorResponse(c, 'Error updating author: Invalid input', 500);
   }
 });
 
@@ -150,10 +180,18 @@ authorsRouter.delete('/:id', async (c) => {
   const id = c.req.param('id');
 
   try {
-    const author = await prisma.author.delete({
-      where: {
-        id: id,
-      },
+    const author = await prisma.$transaction(async (tx) => {
+      await tx.book.deleteMany({
+        where: {
+          author_id: id,
+        },
+      });
+
+      return await tx.author.delete({
+        where: {
+          id: id,
+        },
+      });
     });
 
     return c.json(
@@ -168,11 +206,10 @@ authorsRouter.delete('/:id', async (c) => {
     );
   } catch (error: any) {
     if (error.code === 'P2025') {
-      return c.json({ message: 'Author not found' }, 404);
+      return handleErrorResponse(c, 'Error deleting author: Author not found', 404);
     }
 
-    console.error('Error fetching author:', error);
-    return c.json({ message: 'Internal Server Error: Invalid input' }, 500);
+    return handleErrorResponse(c, 'Error deleting author: Invalid input', 500);
   }
 });
 

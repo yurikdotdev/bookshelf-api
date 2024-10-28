@@ -1,9 +1,8 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 
-import booksRouter from './routes/books'; 
-import authorsRouter from './routes/authors';
-import tagsRouter from './routes/tags';
+import authorsRouter from '@/routes/authors';
+import booksRouter from '@/routes/books';
 
 const app = new Hono();
 
@@ -20,6 +19,5 @@ app.get('/', (c) => {
 
 app.route('/books', booksRouter);
 app.route('/authors', authorsRouter);
-app.route('/tags', tagsRouter)
 
 export default app;
