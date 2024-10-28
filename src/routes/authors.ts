@@ -1,7 +1,7 @@
-import prisma from '@/db';
-import { Author, authorCreateSchema } from '@/types/Authors';
-import { Book } from '@/types/Books';
-import { handleErrorResponse } from '@/utils/utils';
+import prisma from '../db';
+import { Author, authorCreateSchema } from '../types/Authors';
+import { Book } from '../types/Books';
+import { handleErrorResponse } from '../utils/utils';
 import { Hono } from 'hono';
 
 const authorsRouter = new Hono();

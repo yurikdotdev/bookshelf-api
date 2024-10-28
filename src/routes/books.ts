@@ -1,6 +1,6 @@
-import prisma from '@/db';
-import { bookCreateSchema } from '@/types/Books';
-import { handleErrorResponse } from '@/utils/utils';
+import prisma from '../db';
+import { bookCreateSchema } from '../types/Books';
+import { handleErrorResponse } from '../utils/utils';
 import { Book } from '@prisma/client';
 import { Hono } from 'hono';
 

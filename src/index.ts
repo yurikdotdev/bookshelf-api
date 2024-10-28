@@ -1,8 +1,8 @@
 import { Hono } from 'hono';
 import { logger } from 'hono/logger';
 
-import authorsRouter from '@/routes/authors';
-import booksRouter from '@/routes/books';
+import authorsRouter from './routes/authors';
+import booksRouter from './routes/books';
 
 const app = new Hono();
 
