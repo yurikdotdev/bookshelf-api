@@ -2,12 +2,14 @@ FROM oven/bun:latest
 
 WORKDIR /app
 
-COPY package.json bun.lockb ./
-COPY prisma ./prisma
-COPY src ./src
+COPY .  /app
 
-RUN bun install 
+RUN bun install
+
+COPY prisma ./prisma
+
+COPY . .
 
 RUN bunx prisma generate
 
-CMD ["bun", "start"]
+CMD ["bun", "start:migrate"]

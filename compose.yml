@@ -1,15 +1,4 @@
 services:
-  server:
-    build: .
-    ports:
-      - '3000:3000'
-    env_file: .env
-    volumes: 
-      - ${PWD}/src:/app/src
-    depends_on:
-      postgres:
-        condition: service_healthy
-
   postgres:
     image: postgres:alpine
     restart: always
@@ -22,7 +11,18 @@ services:
       test: ['CMD-SHELL', 'pg_isready -U ${POSTGRES_USER}']
       interval: 5s
       timeout: 5s
-      retries: 5 
+      retries: 5
+
+  server:
+    build: .
+    ports:
+      - '3000:3000'
+    env_file: .env
+    volumes:
+      - ${PWD}/src:/app/src
+    depends_on:
+      postgres:
+        condition: service_healthy
 
 volumes:
   postgres_data:
