@@ -6,9 +6,6 @@ export const authorSchema = z.object({
   books: z.array(z.any()).optional(),
 });
 
-export const authorCreateSchema = z.object({
-  name: z.string().max(100),
-  books: z.array(z.any()).optional(),
-})
+export const authorCreateSchema = authorSchema.omit({ id: true });
 
 export type Author = z.infer<typeof authorSchema>;
