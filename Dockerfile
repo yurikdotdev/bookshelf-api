@@ -6,6 +6,8 @@ COPY package.json bun.lockb ./
 COPY prisma ./prisma
 COPY src ./src
 
-RUN bun install && bunx prisma generate
+RUN bun install 
 
-CMD ["bun", "start:migrate"]
+RUN bunx prisma generate
+
+CMD ["bun", "start"]
