@@ -1,18 +1,20 @@
-import prisma from '../db';
-import { bookCreateSchema } from '../types/Books';
-import { handleErrorResponse } from '../utils/utils';
 import { Book } from '@prisma/client';
 import { Hono } from 'hono';
+import {
+  createBook,
+  deleteBook,
+  getAllBooks,
+  getBookById,
+  updateBook,
+} from '../services/booksService';
+import { bookCreateSchema } from '../types/Books';
+import { handleErrorResponse } from '../utils/utils';
 
 const booksRouter = new Hono();
 
 booksRouter.get('/', async (c) => {
   try {
-    const books = await prisma.book.findMany({
-      include: {
-        author: true,
-      },
-    });
+    const books = await getAllBooks();
 
     return c.json(
       {
@@ -29,14 +31,7 @@ booksRouter.get('/:id', async (c) => {
   const id = c.req.param('id');
 
   try {
-    const book = await prisma.book.findUnique({
-      where: {
-        id: id,
-      },
-      include: {
-        author: true,
-      },
-    });
+    const book = await getBookById(id);
 
     if (!book) {
       return handleErrorResponse(c, 'Error fetching book: Book not found', 404);
@@ -66,59 +61,7 @@ booksRouter.post('/', async (c) => {
       );
     }
 
-    const {
-      title,
-      description,
-      publisher,
-      published_date,
-      language,
-      cover_image,
-      author_id,
-    } = parsed.data;
-
-    if (!title || !author_id) {
-      return handleErrorResponse(
-        c,
-        'Validation error (books): Title and author id are required',
-        400
-      );
-    }
-
-    if (title.trim() === '' || author_id.trim() === '') {
-      return handleErrorResponse(
-        c,
-        'Validation error (books): Title or author id cannot be empty',
-        400
-      );
-    }
-
-    const author = await prisma.author.findUnique({
-      where: {
-        id: author_id,
-      },
-    });
-
-    if (!author) {
-      return handleErrorResponse(
-        c,
-        'Error creating book: Author not found',
-        404
-      );
-    }
-
-    const book: Book = await prisma.$transaction(async (tx) => {
-      return await tx.book.create({
-        data: {
-          title,
-          description,
-          publisher,
-          published_date,
-          language,
-          cover_image,
-          author_id,
-        },
-      });
-    });
+    const book: Book = await createBook(parsed);
 
     return c.json(
       {
@@ -147,60 +90,11 @@ booksRouter.patch('/:id', async (c) => {
       );
     }
 
-    const {
-      title,
-      description,
-      publisher,
-      published_date,
-      language,
-      cover_image,
-      author_id,
-    } = parsed.data;
+    const book: Book = await updateBook(id, parsed);
 
-    if (!title || !author_id) {
-      return handleErrorResponse(
-        c,
-        'Validation error (books): Title and author id are required',
-        400
-      );
+    if (!book) {
+      return handleErrorResponse(c, 'Error updating book: Book not found', 404);
     }
-
-    if (title.trim() === '' || author_id.trim() === '') {
-      return handleErrorResponse(
-        c,
-        'Validation error (books): Title or author id cannot be empty',
-        400
-      );
-    }
-
-    const author = await prisma.author.findUnique({
-      where: {
-        id: author_id,
-      },
-    });
-
-    if (!author) {
-      return handleErrorResponse(
-        c,
-        'Error updating book: Author not found',
-        404
-      );
-    }
-
-    const book: Book = await prisma.book.update({
-      where: {
-        id: id,
-      },
-      data: {
-        title,
-        description,
-        publisher,
-        published_date,
-        language,
-        cover_image,
-        author_id,
-      },
-    });
 
     return c.json(
       {
@@ -222,12 +116,8 @@ booksRouter.delete('/:id', async (c) => {
   const id = c.req.param('id');
 
   try {
-    const book = await prisma.book.delete({
-      where: {
-        id: id,
-      },
-    });
-
+    const book = await deleteBook(id);
+    
     return c.json(
       {
         message: 'Book deleted successfully',
