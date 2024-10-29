@@ -1,4 +1,4 @@
-FROM oven/bun:latest
+FROM oven/bun
 
 WORKDIR /app
 
@@ -11,7 +11,5 @@ COPY prisma ./prisma
 COPY . .
 
 RUN bunx prisma generate
-
-RUN sleep 5
 
 CMD ["bun", "start:migrate"]

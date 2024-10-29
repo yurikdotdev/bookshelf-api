@@ -61,7 +61,15 @@ booksRouter.post('/', async (c) => {
       );
     }
 
-    const book: Book = await createBook(parsed);
+    const book = await createBook(parsed.data);
+
+    if (book.title.trim() === '') {
+      return handleErrorResponse(
+        c,
+        'Validation error (books): Title is required',
+        400
+      );
+    }
 
     return c.json(
       {
@@ -71,7 +79,7 @@ booksRouter.post('/', async (c) => {
       201
     );
   } catch (error) {
-    return handleErrorResponse(c, 'Error creating book: Invalid id', 500);
+    return handleErrorResponse(c, 'Error creating book: Invalid author id', 500);
   }
 });
 
@@ -90,10 +98,18 @@ booksRouter.patch('/:id', async (c) => {
       );
     }
 
-    const book: Book = await updateBook(id, parsed);
+    const book = await updateBook(id, parsed.data);
 
     if (!book) {
       return handleErrorResponse(c, 'Error updating book: Book not found', 404);
+    }
+
+    if (book.title.trim() === '') {
+      return handleErrorResponse(
+        c,
+        'Validation error (books): Title is required',
+        400
+      );
     }
 
     return c.json(

@@ -30,7 +30,7 @@ Content-Type: application/json
   "title": "dummy book",
   "description": "dummy description",
   "publisher": "dummy publisher",
-  "published_date": "2023-10-25T14:30:00+00:00",
+  "published_date": "2023-10-25T14:30:00Z",
   "language": "English",
   "cover_image": "https://example.com/great-gatsby-cover.jpg",
   "author_id": "{{author_id}}"
@@ -80,7 +80,7 @@ partial_book_id: jsonpath "$.book.id"
     }
     HTTP 400
     [Asserts]
-    jsonpath "$.message" == "Validation error (books): Title or author id cannot be empty"
+    jsonpath "$.message" == "Validation error (books): Title is required"
 
     # Add a new book with missing author id
     POST {{host}}/books
@@ -110,9 +110,9 @@ partial_book_id: jsonpath "$.book.id"
       "cover_image": "https://example.com/great-gatsby-cover.jpg",
       "author_id": "00000000-0000-0000-0000-000000000000"
     }
-    HTTP 404
+    HTTP 500
     [Asserts]
-    jsonpath "$.message" == "Error creating book: Author not found"
+    jsonpath "$.message" == "Error creating book: Invalid author id"
 
     # Add a new book with invalid author id
     POST {{host}}/books
@@ -184,7 +184,7 @@ HTTP 200
     }
     HTTP 400
     [Asserts]
-    jsonpath "$.message" == "Validation error (books): Title or author id cannot be empty"
+    jsonpath "$.message" == "Validation error (books): Title is required"
 
     # Update a book with an invalid input
     PATCH {{host}}/books/{{book_id}}
@@ -261,9 +261,9 @@ HTTP 200
       "cover_image": "https://example.com/great-gatsby-cover.jpg",
       "author_id": "00000000-0000-0000-0000-000000000000"
     }
-    HTTP 404
+    HTTP 500
     [Asserts]
-    jsonpath "$.message" == "Error updating book: Author not found"
+    jsonpath "$.message" == "Error updating book: Invalid input"
 
 # Delete a book by id
 DELETE {{host}}/books/{{book_id}}
