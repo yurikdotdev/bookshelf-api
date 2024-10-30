@@ -14,6 +14,15 @@ Run:
 bun dev
 ```
 
+## Configuration
+
+.env.example :   
+  
+DATABASE_URL=  
+POSTGRES_USER=  
+POSTGRES_PASSWORD=  
+
+
 ## Testing
 
 ```sh
